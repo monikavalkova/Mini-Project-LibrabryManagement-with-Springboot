@@ -2,7 +2,7 @@
 ### Credentials: admin / admin
 ### App runs on: http://localhost:8080
 
-@baseUrl = http://localhost:8080
+@baseUrl = http://localhost:8088
 @authHeader = Basic YWRtaW46YWRtaW4=
 
 # ─────────────────────────────────────────────
