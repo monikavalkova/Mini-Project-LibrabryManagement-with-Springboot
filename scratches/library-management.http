@@ -1,0 +1,477 @@
+### Library Management System - HTTP Scratch File
+### Credentials: admin / admin
+### App runs on: http://localhost:8080
+
+@baseUrl = http://localhost:8080
+@authHeader = Basic YWRtaW46YWRtaW4=
+
+# ─────────────────────────────────────────────
+# AUTH
+# ─────────────────────────────────────────────
+
+### Show login page
+GET {{baseUrl}}/userlogin
+
+###
+
+### Login (form-based)
+POST {{baseUrl}}/userlogin
+Content-Type: application/x-www-form-urlencoded
+
+username=admin&password=admin
+
+###
+
+### Home page
+GET {{baseUrl}}/home
+Authorization: {{authHeader}}
+
+###
+
+### About page
+GET {{baseUrl}}/about
+Authorization: {{authHeader}}
+
+###
+
+### Contact Us page
+GET {{baseUrl}}/contactus
+Authorization: {{authHeader}}
+
+###
+
+### Logout
+GET {{baseUrl}}/logout
+Authorization: {{authHeader}}
+
+
+# ─────────────────────────────────────────────
+# BOOKS
+# ─────────────────────────────────────────────
+
+### List all books
+GET {{baseUrl}}/show-listof-all-books
+Authorization: {{authHeader}}
+
+###
+
+### Show add-book form
+GET {{baseUrl}}/add-book
+Authorization: {{authHeader}}
+
+###
+
+### Add a book (POST form)
+POST {{baseUrl}}/add-book
+Authorization: {{authHeader}}
+Content-Type: application/x-www-form-urlencoded
+
+book_name=Clean+Code&book_authors=Robert+C.+Martin&book_price=39.99&book_dept=Computer+Science&book_published=2008-08-01&is_book_available=true
+
+###
+
+### Delete a book by ID
+GET {{baseUrl}}/delete-book?id=1
+Authorization: {{authHeader}}
+
+###
+
+### Show edit-book form
+GET {{baseUrl}}/edit-book
+Authorization: {{authHeader}}
+
+###
+
+### Edit a book name by ID (POST form)
+POST {{baseUrl}}/edit-book
+Authorization: {{authHeader}}
+Content-Type: application/x-www-form-urlencoded
+
+id=1&bookname=Clean+Code+2nd+Edition
+
+###
+
+### Show book details search page
+GET {{baseUrl}}/get-book-details
+Authorization: {{authHeader}}
+
+###
+
+### Get details for a specific book
+GET {{baseUrl}}/get-book-details-one?book_name=Clean+Code
+Authorization: {{authHeader}}
+
+###
+
+### Get book details for a non-existent book (expect error/empty)
+GET {{baseUrl}}/get-book-details-one?book_name=NonExistentBook
+Authorization: {{authHeader}}
+
+###
+
+### Show book tracking details page
+GET {{baseUrl}}/get-book-tracking-details
+Authorization: {{authHeader}}
+
+
+# ─────────────────────────────────────────────
+# MEMBERS
+# ─────────────────────────────────────────────
+
+### List all members
+GET {{baseUrl}}/show-listof-all-members
+Authorization: {{authHeader}}
+
+###
+
+### Show add-member form
+GET {{baseUrl}}/add-member
+Authorization: {{authHeader}}
+
+###
+
+### Add a member (POST form)
+POST {{baseUrl}}/add-member
+Authorization: {{authHeader}}
+Content-Type: application/x-www-form-urlencoded
+
+member_name=John+Doe&member_address=123+Main+St&member_phone_number=9876543210&member_dept=Computer+Science&member_gender=male&member_age=25
+
+###
+
+### Delete a member by ID
+GET {{baseUrl}}/delete-member?id=1
+Authorization: {{authHeader}}
+
+###
+
+### Show edit-member form
+GET {{baseUrl}}/edit-member
+Authorization: {{authHeader}}
+
+###
+
+### Edit a member (POST form)
+POST {{baseUrl}}/edit-member
+Authorization: {{authHeader}}
+Content-Type: application/x-www-form-urlencoded
+
+id=1&membername=Jane+Doe&memberaddress=456+Elm+St&membergender=female&memberage=28
+
+###
+
+### Show member details search page
+GET {{baseUrl}}/get-member-details
+Authorization: {{authHeader}}
+
+###
+
+### Get details for a specific member
+GET {{baseUrl}}/get-member-details-one?member_name=John+Doe
+Authorization: {{authHeader}}
+
+###
+
+### Get details for a non-existent member (expect error/null)
+GET {{baseUrl}}/get-member-details-one?member_name=NonExistentMember
+Authorization: {{authHeader}}
+
+###
+
+### Show member tracking details page
+GET {{baseUrl}}/get-member-tracking-details
+Authorization: {{authHeader}}
+
+
+# ─────────────────────────────────────────────
+# BORROW / SMART BOOK SYSTEM
+# ─────────────────────────────────────────────
+
+### Show borrow page (lists members and books)
+GET {{baseUrl}}/sml-main
+Authorization: {{authHeader}}
+
+###
+
+### Borrow books for a member (POST form — up to 3 books)
+POST {{baseUrl}}/sml-main
+Authorization: {{authHeader}}
+Content-Type: application/x-www-form-urlencoded
+
+memberName=John+Doe&bookName=Clean+Code&bookName2=&bookName3=
+
+###
+
+### Show borrow list
+GET {{baseUrl}}/show-barrow-list
+Authorization: {{authHeader}}
+
+###
+
+### Set return date for a member
+GET {{baseUrl}}/set-returndate?member=John+Doe
+Authorization: {{authHeader}}
+
+###
+
+### Return a book (delete from borrow list)
+GET {{baseUrl}}/del-smartbs?name=John+Doe
+Authorization: {{authHeader}}
+
+###
+
+### Show total borrow history
+GET {{baseUrl}}/show-total-history
+Authorization: {{authHeader}}
+
+
+# ─────────────────────────────────────────────
+# EDGE CASES & VALIDATION PROBES
+# ─────────────────────────────────────────────
+
+# --- Books: type mismatch on id (int expected, string given) ---
+# Expected: 400 / exception page
+### delete-book: id is a string instead of int
+GET {{baseUrl}}/delete-book?id=abc
+Authorization: {{authHeader}}
+
+###
+
+### edit-book: id is a string instead of int
+POST {{baseUrl}}/edit-book
+Authorization: {{authHeader}}
+Content-Type: application/x-www-form-urlencoded
+
+id=abc&bookname=ValidName
+
+###
+
+### add-book: price is a string instead of double
+POST {{baseUrl}}/add-book
+Authorization: {{authHeader}}
+Content-Type: application/x-www-form-urlencoded
+
+book_name=TestBook&book_authors=Author&book_price=notANumber&book_dept=CSE&book_published=2024-01-01&is_book_available=true
+
+
+# --- Books: missing required parameters ---
+# Expected: 400 MissingServletRequestParameterException
+### delete-book: id param is missing entirely
+GET {{baseUrl}}/delete-book
+Authorization: {{authHeader}}
+
+###
+
+### get-book-details-one: book_name param is missing entirely
+GET {{baseUrl}}/get-book-details-one
+Authorization: {{authHeader}}
+
+###
+
+### edit-book POST: bookname param is missing
+POST {{baseUrl}}/edit-book
+Authorization: {{authHeader}}
+Content-Type: application/x-www-form-urlencoded
+
+id=1
+
+
+# --- Books: boundary / semantic edge cases ---
+# Expected: silent no-op or unvalidated data accepted (reveals missing validation)
+### delete-book: negative id — no validation, silently ignored
+GET {{baseUrl}}/delete-book?id=-1
+Authorization: {{authHeader}}
+
+###
+
+### delete-book: id that does not exist — no validation, silently ignored
+GET {{baseUrl}}/delete-book?id=99999
+Authorization: {{authHeader}}
+
+###
+
+### edit-book: empty bookname — sets name to empty string with no error
+POST {{baseUrl}}/edit-book
+Authorization: {{authHeader}}
+Content-Type: application/x-www-form-urlencoded
+
+id=1&bookname=
+
+###
+
+### add-book: negative price — no validation
+POST {{baseUrl}}/add-book
+Authorization: {{authHeader}}
+Content-Type: application/x-www-form-urlencoded
+
+book_name=NegativePriceBook&book_authors=Author&book_price=-99.99&book_dept=CSE&book_published=2024-01-01&is_book_available=true
+
+###
+
+### add-book: all fields empty / blank — reveals lack of @NotBlank validation
+POST {{baseUrl}}/add-book
+Authorization: {{authHeader}}
+Content-Type: application/x-www-form-urlencoded
+
+book_name=&book_authors=&book_price=&book_dept=&book_published=&is_book_available=
+
+###
+
+### add-book: extremely long book_name — reveals lack of @Size validation
+POST {{baseUrl}}/add-book
+Authorization: {{authHeader}}
+Content-Type: application/x-www-form-urlencoded
+
+book_name=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&book_authors=Author&book_price=10.0&book_dept=CSE&book_published=2024-01-01&is_book_available=true
+
+###
+
+# Bug: BookController always puts the error message in the model regardless of
+# whether the book was found (unlike MemberController which checks for null).
+# Even a valid book name will show "No Subjects are available".
+### get-book-details-one: existing book — error message shown anyway (bug)
+GET {{baseUrl}}/get-book-details-one?book_name=C
+Authorization: {{authHeader}}
+
+###
+
+### get-book-details-one: empty book_name — NullPointerException risk in equalsIgnoreCase
+GET {{baseUrl}}/get-book-details-one?book_name=
+Authorization: {{authHeader}}
+
+
+# --- Members: type mismatch ---
+### delete-member: id is a string
+GET {{baseUrl}}/delete-member?id=abc
+Authorization: {{authHeader}}
+
+###
+
+### edit-member: memberage is a string
+POST {{baseUrl}}/edit-member
+Authorization: {{authHeader}}
+Content-Type: application/x-www-form-urlencoded
+
+id=1&membername=Jane&memberaddress=123+St&membergender=female&memberage=notAnInt
+
+
+# --- Members: missing required parameters ---
+### delete-member: id param is missing entirely
+GET {{baseUrl}}/delete-member
+Authorization: {{authHeader}}
+
+###
+
+### get-member-details-one: member_name param is missing entirely
+GET {{baseUrl}}/get-member-details-one
+Authorization: {{authHeader}}
+
+###
+
+### edit-member POST: memberage param is missing
+POST {{baseUrl}}/edit-member
+Authorization: {{authHeader}}
+Content-Type: application/x-www-form-urlencoded
+
+id=1&membername=Jane&memberaddress=123+St&membergender=female
+
+
+# --- Members: boundary / semantic edge cases ---
+### add-member: negative age — no validation
+POST {{baseUrl}}/add-member
+Authorization: {{authHeader}}
+Content-Type: application/x-www-form-urlencoded
+
+member_name=NegAge&member_address=Somewhere&member_phone_number=9876543210&member_dept=CSE&member_gender=male&member_age=-5
+
+###
+
+### add-member: phone number overflows long (too many digits)
+POST {{baseUrl}}/add-member
+Authorization: {{authHeader}}
+Content-Type: application/x-www-form-urlencoded
+
+member_name=OverflowPhone&member_address=Somewhere&member_phone_number=99999999999999999999&member_dept=CSE&member_gender=male&member_age=20
+
+###
+
+### add-member: all fields empty — reveals lack of @NotBlank validation
+POST {{baseUrl}}/add-member
+Authorization: {{authHeader}}
+Content-Type: application/x-www-form-urlencoded
+
+member_name=&member_address=&member_phone_number=&member_dept=&member_gender=&member_age=
+
+###
+
+### get-member-details-one: empty member_name — NullPointerException risk
+GET {{baseUrl}}/get-member-details-one?member_name=
+Authorization: {{authHeader}}
+
+
+# --- Borrow system: missing required @RequestParam values ---
+# bookName2 and bookName3 have no default/required=false — missing them throws
+### sml-main POST: bookName2 and bookName3 missing
+POST {{baseUrl}}/sml-main
+Authorization: {{authHeader}}
+Content-Type: application/x-www-form-urlencoded
+
+memberName=Name+A&bookName=C
+
+###
+
+### sml-main POST: memberName missing entirely
+POST {{baseUrl}}/sml-main
+Authorization: {{authHeader}}
+Content-Type: application/x-www-form-urlencoded
+
+bookName=C&bookName2=&bookName3=
+
+###
+
+### set-returndate: member param missing entirely
+GET {{baseUrl}}/set-returndate
+Authorization: {{authHeader}}
+
+###
+
+### del-smartbs: name param missing entirely
+GET {{baseUrl}}/del-smartbs
+Authorization: {{authHeader}}
+
+###
+
+# --- Borrow system: semantic edge cases ---
+### sml-main POST: borrow same book three times — no duplicate check
+POST {{baseUrl}}/sml-main
+Authorization: {{authHeader}}
+Content-Type: application/x-www-form-urlencoded
+
+memberName=Name+A&bookName=C&bookName2=C&bookName3=C
+
+###
+
+### sml-main POST: borrow with an unknown member name — no validation
+POST {{baseUrl}}/sml-main
+Authorization: {{authHeader}}
+Content-Type: application/x-www-form-urlencoded
+
+memberName=GhostMember&bookName=C&bookName2=&bookName3=
+
+###
+
+### del-smartbs: name that is not in the borrow list — silent no-op
+GET {{baseUrl}}/del-smartbs?name=GhostMember
+Authorization: {{authHeader}}
+
+###
+
+### set-returndate: member not in borrow list — returns null silently
+GET {{baseUrl}}/set-returndate?member=GhostMember
+Authorization: {{authHeader}}
+
+
+# --- Unauthenticated access ---
+# Expected: redirect to /userlogin (302)
+### Access protected page without credentials
+GET {{baseUrl}}/show-listof-all-books
